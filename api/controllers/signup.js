@@ -2,10 +2,9 @@ import prisma from "../utils/prismaClient.js";
 import bcrypt from "bcrypt";
 import { UserSchemaValidation } from "../utils/schema/index.js";
 import { config } from "dotenv";
-import jwt from "jsonwebtoken";
 config({ path: `.env.${process.env.NODE_ENV}` });
 
-export const signup = async (req, res) => {
+const signup = async (req, res) => {
   const { username, email, password } = req.body;
   if (!username || !email || !password) {
     return res.status(401).json({
@@ -69,78 +68,4 @@ export const signup = async (req, res) => {
   }
 };
 
-export const login = async (req, res) => {
-  const { email, password } = req.body;
-  if (!email || !password) {
-    return res.status(401).json({
-      status: "failed",
-      message: "login credentials should not be empty",
-    });
-  } else {
-    try {
-      const findUser = await prisma.user.findUnique({
-        where: {
-          email: email,
-        },
-      });
-      if (!findUser) {
-        res.status(401).json({
-          status: "failed",
-          message: "user not found, try signup",
-        });
-      } else {
-        try {
-          const PasswordValidation = bcrypt.compareSync(
-            password,
-            findUser.password
-          );
-          if (!PasswordValidation) {
-            return res.status(401).json({
-              status: "failed",
-              message: "invalid password",
-            });
-          } else {
-            try {
-              const AccessToken = jwt.sign(
-                {
-                  email: findUser.email,
-                },
-                process.env.ACCESS_SECRET,
-                { expiresIn: "15m" }
-              );
-              const RefreshToken = jwt.sign(
-                { email: findUser.email },
-                process.env.REFRESH_SECRET,
-                {
-                  expiresIn: "28d",
-                }
-              );
-              res.cookie("jwt", RefreshToken, {
-                httpOnly: true,
-                secure: true,
-                sameSite: false,
-                maxAge: 7 * 24 * 60 * 60 * 1000,
-              });
-              res.status(201).json({ token: AccessToken });
-            } catch {
-              return res.status(401).json({
-                status: "failed",
-                message: "something went wrong da",
-              });
-            }
-          }
-        } catch {
-          return res.status(401).json({
-            status: "failed",
-            message: "something went wrong",
-          });
-        }
-      }
-    } catch {
-      return res.status(401).json({
-        status: "failed",
-        message: "something went wrong",
-      });
-    }
-  }
-};
+export default signup;
