@@ -38,23 +38,23 @@ const login = async (req, res) => {
             try {
               const AccessToken = jwt.sign(
                 {
-                  email: findUser.email,
+                  id: findUser.id,
                 },
                 process.env.ACCESS_SECRET,
                 { expiresIn: "15m" }
               );
               const RefreshToken = jwt.sign(
-                { email: findUser.email },
+                { id: findUser.id },
                 process.env.REFRESH_SECRET,
                 {
                   expiresIn: "28d",
                 }
               );
-              res.cookie("jwt", RefreshToken, {
+              res.cookie("auth-session.validation", RefreshToken, {
                 httpOnly: true,
                 secure: true,
                 sameSite: false,
-                maxAge: 7 * 24 * 60 * 60 * 1000,
+                maxAge: 28 * 24 * 60 * 60 * 1000,
               });
               res.status(201).json({ token: AccessToken });
             } catch {
