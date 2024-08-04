@@ -39,12 +39,13 @@ const login = async (req, res) => {
               const AccessToken = jwt.sign(
                 {
                   id: findUser.id,
+                  role: findUser.role,
                 },
                 process.env.ACCESS_SECRET,
                 { expiresIn: "15m" }
               );
               const RefreshToken = jwt.sign(
-                { id: findUser.id },
+                { id: findUser.id, role: findUser.role },
                 process.env.REFRESH_SECRET,
                 {
                   expiresIn: "28d",

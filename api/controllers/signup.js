@@ -38,6 +38,7 @@ const signup = async (req, res) => {
                   username: username,
                   email: email,
                   password: encryptedPassword,
+                  role: "user",
                 },
               })
               .then(() =>
