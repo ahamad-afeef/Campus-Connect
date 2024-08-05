@@ -51,6 +51,15 @@ const login = async (req, res) => {
                   expiresIn: "28d",
                 }
               );
+              const encryptRefresh = bcrypt.hashSync(RefreshToken, 10);
+              await prisma.user.update({
+                where: {
+                  email: findUser.email,
+                },
+                data: {
+                  refreshtoken: encryptRefresh,
+                },
+              });
               res.cookie("auth-session.validation", RefreshToken, {
                 httpOnly: true,
                 secure: true,
