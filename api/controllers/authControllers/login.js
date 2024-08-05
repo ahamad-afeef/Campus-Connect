@@ -1,4 +1,4 @@
-import prisma from "../utils/prismaClient.js";
+import prisma from "../../utils/prismaClient.js";
 import bcrypt from "bcrypt";
 import { config } from "dotenv";
 import jwt from "jsonwebtoken";
@@ -60,7 +60,7 @@ const login = async (req, res) => {
                   refreshtoken: encryptRefresh,
                 },
               });
-              res.cookie("auth-session.validation", RefreshToken, {
+              res.cookie("authsession", RefreshToken, {
                 httpOnly: true,
                 secure: true,
                 sameSite: false,
@@ -70,7 +70,7 @@ const login = async (req, res) => {
             } catch {
               return res.status(401).json({
                 status: "failed",
-                message: "something went wrong da",
+                message: "something went wrong",
               });
             }
           }
