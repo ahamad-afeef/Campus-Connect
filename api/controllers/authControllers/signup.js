@@ -1,6 +1,6 @@
-import prisma from "../utils/prismaClient.js";
+import prisma from "../../utils/prismaClient.js";
 import bcrypt from "bcrypt";
-import { UserSchemaValidation } from "../utils/schema/index.js";
+import { UserSchemaValidation } from "../../utils/schema/index.js";
 import { config } from "dotenv";
 config({ path: `.env.${process.env.NODE_ENV}` });
 
