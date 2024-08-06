@@ -1,8 +1,6 @@
 import prisma from "../../utils/prismaClient.js";
 import bcrypt from "bcrypt";
-import { config } from "dotenv";
-import jwt from "jsonwebtoken";
-config({ path: `.env.${process.env.NODE_ENV}` });
+import { AccessToken, RefreshToken } from "../../services/authServices.js";
 
 const login = async (req, res) => {
   const { email, password } = req.body;
@@ -36,22 +34,15 @@ const login = async (req, res) => {
             });
           } else {
             try {
-              const AccessToken = jwt.sign(
-                {
-                  id: findUser.id,
-                  role: findUser.role,
-                },
-                process.env.ACCESS_SECRET,
-                { expiresIn: "15m" }
-              );
-              const RefreshToken = jwt.sign(
-                { id: findUser.id, role: findUser.role },
-                process.env.REFRESH_SECRET,
-                {
-                  expiresIn: "28d",
-                }
-              );
-              const encryptRefresh = bcrypt.hashSync(RefreshToken, 10);
+              const accessToken = AccessToken({
+                id: findUser.id,
+                role: findUser.role,
+              });
+              const refreshToken = RefreshToken({
+                id: findUser.id,
+                role: findUser.role,
+              });
+              const encryptRefresh = bcrypt.hashSync(refreshToken, 10);
               await prisma.user.update({
                 where: {
                   email: findUser.email,
@@ -60,13 +51,13 @@ const login = async (req, res) => {
                   refreshtoken: encryptRefresh,
                 },
               });
-              res.cookie("authsession", RefreshToken, {
+              res.cookie("authsession", refreshToken, {
                 httpOnly: true,
                 secure: true,
                 sameSite: false,
                 maxAge: 28 * 24 * 60 * 60 * 1000,
               });
-              res.status(201).json({ token: AccessToken });
+              res.status(201).json({ token: accessToken });
             } catch {
               return res.status(401).json({
                 status: "failed",
