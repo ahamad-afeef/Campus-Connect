@@ -3,8 +3,8 @@ import { Link } from "react-router-dom";
 
 const Signup = () => {
   return (
-    <div className="signup template d-flex justify-content-center align-items-center vh-100 text-white">
-      <div className="form_container p-5 rounded">
+    <div className="signup template d-flex justify-content-center align-items-center vh-100 bg-primary">
+      <div className="form_container p-5 rounded bg-white">
         <form>
           <h3 className="text-center mb-5">Sign Up</h3>
           <div className="mb-3">
