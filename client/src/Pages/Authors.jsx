@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import {Link} from "react-router-dom";
-import Avatar1 from "../images/Avator1.jpg";
-import Avatar2 from "../images/Avator2.jpg";
-import Avatar3 from "../images/Avator3.jpg";
-import Avatar4 from "../images/Avator4.jpg";
-import Avatar5 from "../images/Avator5.jpg";
+import Avatar1 from "../images/1.jpg";
+import Avatar2 from "../images/2.jpeg";
+import Avatar3 from "../images/1.jpg";
+import Avatar4 from "../images/2.jpeg";
+import Avatar5 from "../images//1.jpg";
 
 const authorsData = [
   { id: 1, avatar: Avatar1, name: "Ahamad Afeef", posts: 3 },
@@ -19,7 +19,7 @@ const Authors = () => {
     <section className="authors">
       {authors.length > 0 ? 
         <div className="container authors__container">
-          {authors.map((id, avatar, name, posts) => {
+          {authors.map(({id, avatar, name, posts}) => {
             return (
               <Link key = {id} to={`./posts/users/${id}`}>
                 <div className="author__avatar">
